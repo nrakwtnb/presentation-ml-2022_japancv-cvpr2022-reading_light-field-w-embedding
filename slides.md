@@ -10,6 +10,7 @@ theme: seriph
 highlighter: prism
 #highlighter: shiki
 lineNumbers: false
+background: /cover_background.jpg
 ---
 
 ## Learning Neural Light Fields with Ray-Space Embedding
@@ -40,14 +41,14 @@ version: 1.0
 
 # 発表者のバックグラウンドについて
 
-- epoch1: 物理学（場の理論・弦理論、やや数理物理寄り）を専攻（博士号取得まで）
-  - 理論的な話も大好きですが、簡単な計算機実験（数値計算やモデル学習ではなく、シンボリックな計算）もしていた
-- epoch2: いわゆる受諾分析会社でデータサイエンティスト（未定義）として従事
-- 技術領域は、画像認識、自然言語処理が主
+- epoch1 (2012-2017): 物理学（場の理論・弦理論、やや数理物理寄り）を専攻（博士号取得まで）
+  - 理論的な話も大好きですが、簡単な計算機実験（数値計算やモデル学習ではなく、シンボリックな計算）もしてました
+- epoch2 (2017-現在): いわゆる受諾分析会社でデータサイエンティスト（未定義）として従事
+  - 技術領域は、画像認識、自然言語処理が主
     - ただ画像解析系はここ1年ほど離れています（最近の流れについていけていない）
     - Comptuer Graphicsもド素人
-  - 小規模 R&D 寄りを担当する事が多め
-    - 小規模だが、API 開発・運用設計まで行うため、論文調査のウェイトはかなり小さく、たくさん読んでるわけではない
+  - 小規模(顧客含めて2〜3人) R&D 寄りを担当する事が多め
+    - 小規模が故に、分析設計・API 開発・運用設計までほぼ1人行う事が多いため、論文調査のウェイトはかなり小さく、業務中はたくさん読んでるわけではない
 
 <style>
 li{
@@ -66,7 +67,7 @@ li{
 <div class="grid grid-cols-[70%,30%] gap-4"><div>
 
 * 主著者がMetaへインターンに行った時の研究結果
-* フォトリアルなView synthesisにおいて、Light Fieldを直接モデル化し、以下を達成（Light Field自体はView synthesisの標準的な手法の1つであるため、全く目新しくない）
+* フォトリアルなView synthesisにおいて、Light Fieldを直接モデル化し、以下を達成（Light Field自体はView synthesisの標準的な手法の1つであるため、全く目新しくないが、温故知新も大事ということで）
   * **NeRF系に比べてレンダリングが高速** （精度は同程度）
   * MPI系(NeXなど)と比べてメモリ効率的な手法（精度はやはり同程度）
   * radiance fieldでは不十分な、屈折や反射などもよく表現できる（との主張）
@@ -1181,8 +1182,8 @@ li {
 
 |モデル|詳細|データセット|訓練時間|
 |-|-|-|-|
-|NLF | subdivisionあり($32^3$ resolution) | Stanford（視点に関し密なデータセット） | 約20時間 |
-|NLF | subdivisionなし | RFF, Shiny（視点に関し疎なデータセット） | 約10時間 |
+|NLF | subdivisionあり($32^3$ resolution) | RFF, Shiny（視点に関し疎なデータセット） | 約20時間 |
+|NLF | subdivisionなし | Stanford（視点に関し密なデータセット） | 約10時間 |
 |NeRF| | 各データセット | 約18時間 |
 |NeX | | 各データセット | 約36時間・2GPU |
 
@@ -1318,5 +1319,44 @@ li p{
   padding-bottom: 0px;
 }
 </style>
+
+---
+
+# Light slabとオブジェクトの位置関係に関する定性評価
+
+<div class="grid grid-cols-[65%,35%] gap-4"><div>
+
+* Light Slabの深度と、オブジェクトの深度の関係を幾つか変えた時に、学習後の推論結果がどう変わるか、を評価
+  - Light slabとオブジェクトの深度が一致している時、$z=0$
+  - 離れるにつれ、$z$の値が大きくなる
+* 結果
+  - $z=0$の時は、綺麗に補間できている
+  - $z=3$の時、EPIがガタガタ（＝正しく補間できていない）
+    - 非Lambert反射・屈折がない状況では、まっすぐなタイル積算型（ただし斜めでよい）になる
+
+</div><div>
+
+<img class="w-80" src="/effect_of_initial_parametrization.png" />
+
+</div></div>
+
+---
+
+# 埋め込み空間の可視化
+
+<div class="grid grid-cols-[65%,35%] gap-4"><div>
+
+* 埋め込みなし（Not Used）、MLPで直接埋め込み（Feature）、局所ファイン変換を推定して埋め込み（Local Affine）の3つのケースについて、学習後の推論結果がどう変わるか、を評価
+  - 2枚目がEPI、3枚目が埋め込みベクトルの主成分top 3をRGBで可視化
+* 結果
+- Not Usedとは、EPIがガタガタ（＝正しく保管できていない）
+  - Featureの場合は、光線空間内を動いた時の、埋め込みベクトルの変化がガタガタ（解釈不明）になっている
+  - Local Affineは、Light Field中間層におけるある種の正則化と思える？
+
+</div><div>
+
+<img class="w-80" src="/effect_of_different_embedding.png" />
+
+</div></div>
 
 

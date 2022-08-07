@@ -28,7 +28,7 @@ lineNumbers: false
 <div>
 version: 0.2
 <div></div>
-暫定公開版：
+暫定公開版：https://temporal-nw-slide-japancv-cvpr2022-reading-20220807.netlify.app/
 <div></div>
 引用元が明記されていない画像の著作権は、スライド作成者に帰属します。
 </div>

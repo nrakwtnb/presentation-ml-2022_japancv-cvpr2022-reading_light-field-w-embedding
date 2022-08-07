@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@slidev/cli": "^0.34.3",
-    "@slidev/theme-default": "^0.21.3",
-    "@slidev/theme-seriph": "^0.21.3"
+    "@slidev/theme-default": "^0.21.2",
+    "@slidev/theme-seriph": "^0.21.2"
   }
 }

@@ -871,25 +871,12 @@ li li {
 
 # 定性比較：デモ動画
 
-<!--
-<table style="border-collapse: collapse; border: none;">
-  <tr style="border: none;"><td>
-    <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_gt.mp4" loop></video>
-  </td><td>
-    <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_nerf.mp4" loop></video>
-  </td><td>
-    <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_xfields.mp4" loop></video>
-  </td><td>
-    <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_nerf.mp4" loop></video>
-  </td></tr>
-</table>
--->
-
 以下は、著者らのHPに掲載されている比較である。
 著者らは違いを赤い枠で囲み強調しているが、正直、見た目に違いはほとんどない...
 
 <center>
 <table style="border-collapse: collapse; border: none;">
+
   <tr style="border: none;"><td>
    <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_gt.mp4" loop controls></video>
   </td><td>
@@ -899,6 +886,7 @@ li li {
   </td><td>
     <video width="250" src="https://neural-light-fields.github.io/videos/stanford_tarot_small_nerf.mp4" loop controls></video>
   </td></tr>
+
   <tr style="border: none;"><td>
     Ground Truth<br>(Nearest)
   </td><td>
@@ -908,7 +896,9 @@ li li {
   </td><td>
     NLF
   </td></tr>
+
 </table>
+
 <!-- [TODO] centering tha cells at the last row -->
 
 taken from https://neural-light-fields.github.io/
@@ -923,13 +913,13 @@ taken from https://neural-light-fields.github.io/
 
 <table style="border-collapse: collapse; border: none;">
   <tr style="border: none;"><td>
-    <img class="w-90" src="comparison_on_view_dependence_no1.png" />
+    <img class="w-90" src="/comparison_on_view_dependence_no1.png" />
   </td><td>
-    <img class="w-90" src="comparison_on_view_dependence_no2.png" />
+    <img class="w-90" src="/comparison_on_view_dependence_no2.png" />
   </td></tr>
 
   <tr style="border: none;"><td>
-    <img class="w-90" src="comparison_on_view_dependence_no3.png" />
+    <img class="w-90" src="/comparison_on_view_dependence_no3.png" />
     <center>
       <font size="2">いずれも対象論文[1]より拝借</font>
     </center>

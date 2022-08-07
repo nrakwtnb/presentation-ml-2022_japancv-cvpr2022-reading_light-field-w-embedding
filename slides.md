@@ -22,11 +22,11 @@ lineNumbers: false
 
 <br>
 
-## nw
+## N. Watanabe.
 
 <footer class="absolute bottom-0 left-0 right-0 p-3">
 <div>
-version: 0.2
+version: 1.0
 <div></div>
 暫定公開版：https://temporal-nw-slide-japancv-cvpr2022-reading-20220807.netlify.app/
 <div></div>
@@ -40,14 +40,14 @@ version: 0.2
 
 # 発表者のバックグラウンドについて
 
-- epoch1: 物理学（場の理論・弦理論、やや数理物理寄り）を専攻
+- epoch1: 物理学（場の理論・弦理論、やや数理物理寄り）を専攻（博士号取得まで）
   - 理論的な話も大好きですが、簡単な計算機実験もしていました
 - epoch2: いわゆる受諾分析会社でデータサイエンティスト（未定義）として従事
-  - ただ画像解析系はここ1年ほど離れています
+- 技術領域は、画像認識、自然言語処理が主
+    - ただ画像解析系はここ1年ほど離れています（最近の流れについていけていない）
+    - Comptuer Graphicsもド素人
   - 小規模 R&D 寄りを担当する事が多め
     - 小規模だが、API 開発・運用設計まで行うため、論文調査のウェイトはかなり小さく、たくさん読んでるわけではない
-  - 技術領域は、画像認識、自然言語処理が主
-    - CV/CG 一筋でもない
 
 <style>
 li{
@@ -63,15 +63,22 @@ li{
 
 # 紹介論文概要
 
+<div class="grid grid-cols-[70%,30%] gap-4"><div>
+
 * 主著者がMetaへインターンに行った時の研究結果
 * フォトリアルなView synthesisにおいて、Light Fieldを直接モデル化し、以下を達成（Light Field自体はView synthesisの標準的な手法の1つであるため、全く目新しくない）
   * **NeRF系に比べてレンダリングが高速** （精度は同程度）
   * MPI系(NeXなど)と比べてメモリ効率的な手法（精度はやはり同程度）
   * radiance fieldでは不十分な、屈折や反射などもよく表現できる（との主張）
-* Light Fieldの学習困難に対し、以下2つの技法を提案し、その有効性を評価
+* Light Fieldの汎化困難さに対し、以下2つの技法を提案し、その有効性を評価
   * Ray-Space Embeddingと呼ばれる埋め込みを、Positional Embeddingの前に挿入する事で、サンプル間の補間をしやすい構造へマッピング
   * 複雑なシーンについても、Subdivisionという空間分割を行う事で精度を担保
     * 分割数で、解像度（計算コスト）と精度のトレードオフを制御
+
+</div><div>
+  <video src="https://neural-light-fields.github.io/videos/shiny_cd_ours.mp4" controls loop></video>
+  <video src="https://neural-light-fields.github.io/videos/shiny_lab_ours.mp4" controls loop></video>
+</div></div>
 
 ---
 
@@ -87,9 +94,8 @@ li{
 #### 主観的理由
 
 - (Novel View Synthesisの文脈で) "Light Field" なる単語をたまに見かけるが、何なのか全く知らない
-
   - "Light", "Field"と物理学畑で育った人間に刺さるキーワード
-  - 定義を見てみると、数学的にも興味深い
+  - 数学的観点からも興味深い
 
 - 今回幾つか読んだ中で、初見では彼らの提案内容（のアイディア）をよく理解できなかった
   - せっかく自分なりに解読・再整理したので、発表します
@@ -174,10 +180,23 @@ Novel View Synthesisを訳すと「新規視点の光景を合成」となる。
 
 #### レンダリングプロセス
 
+<div class="grid grid-cols-[70%,30%] gap-4"><div>
+
 * 通常Radiance Fieldを用いたボリュームレンダリングに於いては、各視線上、放射輝度の値の分布が利用される
 * 言い換えると、viewの1つのピクセルの色を決定するために、そのピクセルを通る視線上の放射輝度の値を、十分なサンプリング数で計算する必要がある
 
+</div><div>
+
+<center>
+<img class="w-100" src="volume_rendering_process_w_radiance_field.png" />
+<font size="2">論文[7]より借用</font>
+</center>
+
+</div></div>
+
 <br>
+
+<v-click>
 
 #### 計算コストの見積もり
 
@@ -190,9 +209,9 @@ $H \times W \times M \sim 10^7$の放射輝度を評価する必要がある
 NeRF-family においては、radiance field をMLP (Multi-Layer Perceptron)でモデル化しているが、
 1枚の画像生成のために、このMLPに対する$10^7$回のforwarding計算となる。
 
-
-
 そのため、一般的に **radiance fieldを用いたレンダリングプロセスは高コスト** で、リアルタイム計算が難しい。
+
+</v-click>
 
 <!-->
  の radiance field を表す MLP を、回評価する必要がある
@@ -275,9 +294,11 @@ table {
 
 * 3次元空間における、光線(ray)がなす集合（以降 $\;\mathcal{L}\;$ とかく）を考え、 **『光線空間(ray space)』** と呼ぶ $^{*1}$
   - この$\mathcal{L}$上の、放射輝度（色のみ）に値を取る場が、**Light Field** である $^{*2}$
-* 特にこれをNNでモデル化したものを、**『Neural Light Field (NLF』** と呼ぶ。
+* 特にこれをNNでモデル化したものを、**『Neural Light Field (NLF)』** と呼ぶ。
 
 <br>
+
+<v-click>
 
 <div class="grid grid-cols-[70%,30%] gap-4"><div>
 
@@ -314,6 +335,8 @@ for $\scriptsize w\!=\!x,y$ and $\scriptsize i\!=\!A,B$）
 
 </footer>
 
+</v-click>
+
 <!--
 大域的な 4 次元の座標は貼れないが、後述のように
 -->
@@ -322,12 +345,124 @@ for $\scriptsize w\!=\!x,y$ and $\scriptsize i\!=\!A,B$）
 
 # 2次元シーン空間に対する光線空間
 
-光線空間とその上の座標を理解するために、ここでは2次元シーン空間を考える。この時、対応する光線空間は2次元である。
+光線空間$\;\mathcal{L}\;$とその上の座標を理解するために、ここでは2次元の世界（以降、シーン空間 $\mathcal{S}$と呼ぶ）を考える。この時、$\;\mathcal{L}\;$は2次元の空間をなすが、シーン空間と光線空間の間に以下の対応が存在する：
 
+<table width="300">
+
+  <tr><td class="left">
+
+2次元シーン空間 $\mathcal{S}$
+
+  </td><td class="center">
+
+$\leftrightarrow$
+
+  </td><td class="right">
+
+光線空間 $\mathcal{L}$
+
+  </td></tr>
+
+
+
+  <tr><td class="left">
+1つの光線（＝直線）
+  </td><td class="center">
+
+$\leftrightarrow$
+
+  </td><td class="right">
+1点
+  </td></tr>
+
+
+  <tr><td class="left">
+
+特定の点を通る光線全体の集合（下図中央）
+
+  </td><td class="center">
+
+$\leftrightarrow$
+
+  </td><td class="right">
+
+直線（下図右） $^{*1}$
+
+  </td></tr>
+
+
+  <tr><td class="left">
+
+特定の点から出る光線に対し、その角度を変える
+
+  </td><td class="center">
+
+$\leftrightarrow$
+
+  </td><td class="right">
+
+直線上を動く $^{**2}$
+
+  </td></tr>
+
+</table>
+
+<style>
+table {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+td.left {
+  width: 40%;
+  text-align: right;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+td.right {
+  width: 30%;
+  text-align: left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+td.center {
+  width: 5%;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+td {
+  font-size: 13px;
+  line-height: 18px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+td p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+</style>
+
+<!--
 定義より、2次元シーン空間内の1つの光線（直線）は、光線空間内の1点に対応する。
 また、特定の点を通る光線全体の集合（下図中央）は、
 光線空間上の直線（下図右）に一致する。$^{*1}$
 言い換えると、特定の点から出る光線に対し、その角度を変える事は、光線空間内の直線上を動く事に対応する。$^{**2}$
+-->
+
 
 <div class="grid grid-cols-[30%,35%,35%] gap-4"><div style="font-size: 11pt;">
 
@@ -337,27 +472,37 @@ for $\scriptsize w\!=\!x,y$ and $\scriptsize i\!=\!A,B$）
 
 <br>
 
-- light slabで導入した2平面は、2次元シーン空間だと、2直線になる
+- light slabで導入した2平面は、2次元シーン空間 $\mathcal{S}$ だと、2直線になる
 - 各slab直線に、s座標とu座標を導入
-  - 光線空間の座標となる
+  - 光線空間 $\mathcal{L}$ の座標となる
 
 </div><div>
 
 <center>
-  2次元シーン空間
+
+  2次元シーン空間 $\mathcal{S}$
   <img class="w-90" src="/NLF_explanation_2D_scene.png" />
+
 </center>
 
 </div><div>
 
 <center>
-  対応する光線空間(2次元)
-  <img class="w-70" src="/NLF_explanation_2D_ray_space.png" />
+
+  対応する光線空間  $\mathcal{L}$ (2次元)
+
+  <img class="w-60" src="/NLF_explanation_2D_ray_space.png" />
 </center>
+
+<style>
+div center {
+  font-size: 12px;
+}
+</style>
 
 </div></div>
 
-<footer class="absolute bottom-0 left-0 right-0 p-3">
+<footer class="absolute bottom-0 left-0 right-0 p-1">
 <hr>
 
 1. 正確にはlight slabが直交座標を張る場合。3次元シーン空間の場合は、平面となる。
@@ -371,33 +516,44 @@ for $\scriptsize w\!=\!x,y$ and $\scriptsize i\!=\!A,B$）
 
 1つの点オブジェクトが存在するシーンを考え、そこから出ていく光線全体についてもう少し考察する。
 
+<div v-click="1">
 
 1. <font color="magenta">オブジェクトが、slab直線に対し平行に（図面上、水平に）移動する</font>
   - この時、光線空間内では直線も平行移動、すなわち、s切片が変わる
+
+</div>
+<div v-click="2">
 
 2. <font color="deepskyblue">オブジェクトが、slab直線に対し垂直に（図面上、鉛直に）移動する</font>
   - この時、光線空間内では、ある点を中心に回転移動、すなわち、直線の傾きが変わる
     - 今回の例だと、オブジェクト移動で不変なray $B$ が回転の中心
 
+</div>
+<div v-click="3">
+
 3. <font color="red">オブジェクトが、 s 座標に対応するslab直線上にのる</font>
   - 傾きが0、すなわち光線空間において、$u$ 軸に平行な直線となる
 
-<div class="grid grid-cols-[65%,35%] gap-4"><div>
+</div>
+<div v-click="1">
+
+  <div class="grid grid-cols-[55%,45%] gap-4"><div>
 
 <center>
   <font size="2">2次元シーン空間</font>
   <img class="w-70" src="/NLF_relation_2D_scene.png" />
 </center>
 
-</div><div>
+  </div><div>
 
-<center>
+<left>
   <font size="2">対応する光線空間(2次元)</font>
   <img class="w-60" src="/NLF_relation_2D_ray_space.png" />
-</center>
+</left>
 
-</div></div>
+  </div></div>
 
+</div>
 
 <style>
 ol li{
@@ -418,10 +574,10 @@ ul li{
 
 # ふと我に返る（安直なLight Fieldの学習は困難では？）
 
-<br>
-
 これまで見てきたように、Light Field は、光線を入力とし、付随する輝度を返す関数である。
 これは視点情報（1点を通る光線の集まり）を入力とすると、対応するview画像（1点に集約していく輝度の集まり）を出力する、とも言えるため、実質的には
+
+<v-click>
 
 <center>
 
@@ -430,6 +586,8 @@ ul li{
 </center>
 
 と言える。
+
+</v-click><v-click>
 
 特に、未知の視点(novel view)に対して推論可能である事に対しては、
 
@@ -441,9 +599,13 @@ ul li{
 
 となる。
 
+</v-click><v-click>
+
 しかし実際問題は、光線空間の背後に隠れてしまった3 次元世界の事前情報を直接活用できていない事もあり、うまい補間を定めるのは難しい、と考えられる。
 
 ※そもそもこれが上手く行くなら、(単純な view synthesis において) NeRF なんて複雑なものは要らず、直接解いてしまえばよかったはずである。
+
+</v-click>
 
 <!--
 実質的に  を解く事と等価である。
@@ -470,16 +632,21 @@ view synthesis を直接 NN (MLP)で解こうとしている
 ### セットアップ
 <br>
 
+<v-click>
+
 #### "2"次元シーン空間内のオブジェクトとカメラ配置
 
 * 十分小さな点オブジェクトP, Qが与えられる
 * カメラ視点(viewpoint)もA, Bの2つを考える
 
+</v-click><v-click>
 <br>
 
 #### 光線
 
 * 輝度が非自明な光線としては、A-P, A-Q, B-P, B-Qの4つが存在
+
+</v-click>
 
 </div><div>
 
@@ -516,7 +683,7 @@ view synthesis を直接 NN (MLP)で解こうとしている
 <div class="grid grid-cols-[36%,31%,33%] gap-4"><div>
 
 <center>
-  2次元空間内の配置
+  2次元シーン空間内の配置
   <img class="w-75" src="/NLF_explanation_3Dspace.png" />
 </center>
 
@@ -571,11 +738,14 @@ view synthesis を直接 NN (MLP)で解こうとしている
 <div class="grid grid-cols-[70%,30%] gap-4"><div>
 
 * この時、既知の各光景（訓練サンプル）は、光線空間内の線分上の色分布に他ならない(下図左)
+<div v-click="1">
+
 * 一方で、新規の光景を推論する事は、
   1. 異なる視点間で、同一オブジェクト由来の輝度の対応付けを行い、
   2. 視点間の輝度を補間し、新たな線分上の色分布を推定する
   
   事に相等する(下図中央)
+</div>
 
 <style>
 li p {
@@ -587,7 +757,7 @@ li p {
 </div><div>
 
 <center>
-<font size="3" align="center">2次元空間内の配置</font>
+<font size="3" align="center">2次元シーン空間内の配置</font>
 <img class="h-50" src="/NLF_explanation_3Dspace.png" />
 </center>
 
@@ -599,18 +769,26 @@ li p {
     <br>
     （点線が既知）
   </td><td>
+    <div v-click="1">
     未知サンプル（光線）の輝度を推定
+    </div>
   </td><td>
+    <div v-click="2">
     正解(ground truth)
     <br>
     （実線が正しい輝度に対応し、他は0）
+    </div>
   </td></tr>
   <tr style="border: none;"><td>
     <img class="w-55" src="/NLF_explanation_training_data_on_ray_space.png" />
   </td><td>
+    <div v-click="1">
     <img class="w-55" src="/NLF_explanation_inference_on_ray_space.png" />
+    </div>
   </td><td>
+    <div v-click="2">
     <img class="w-55" src="/NLF_explanation_ground_truth_on_ray_space.png" />
+    </div>
   </td></tr>
 </table>
 
@@ -653,9 +831,11 @@ th {
 td {
   border-right: 1px solid black;
   border-left: 1px solid black;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 table {
-  font-size: 11px;
+  font-size: 12px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 }
@@ -703,16 +883,29 @@ table {
   </td></tr>
 </table>
 
+<v-click>
+
 となるが、結局、「Neural Light Field (NLF)の汎化」は、
 
 <center>
-4次元光線空間中、幾つかの2次元平面上での色分布が（既知サンプルとして）与えられた際に、<br>
-そこから外れた2次元平面上の色分布を補間する
+
+<div style="text-align: left; margin-left: 100px;">
+
+4次元光線空間 $\mathcal{L}$ 中、<br>
+幾つかの2次元平面上での色分布（＝画像）が（既知サンプルとして）与えられた際に、<br>
+それらとは異なる新しい2次元平面上の色分布（＝新規視点の画像）を補間（＝生成）する
+
+</div>
+
 </center>
 
 事に他ならない。しかし、(3次元世界由来である、という)事前知識なしにこれは難しい。
 
+</v-click><v-click>
+
 これを成功させるため、論文では、次に説明するような2つの技法を提案している。
+
+</v-click>
 
 ---
 

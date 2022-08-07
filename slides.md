@@ -41,7 +41,7 @@ version: 1.0
 # 発表者のバックグラウンドについて
 
 - epoch1: 物理学（場の理論・弦理論、やや数理物理寄り）を専攻（博士号取得まで）
-  - 理論的な話も大好きですが、簡単な計算機実験もしていました
+  - 理論的な話も大好きですが、簡単な計算機実験（数値計算やモデル学習ではなく、シンボリックな計算）もしていた
 - epoch2: いわゆる受諾分析会社でデータサイエンティスト（未定義）として従事
 - 技術領域は、画像認識、自然言語処理が主
     - ただ画像解析系はここ1年ほど離れています（最近の流れについていけていない）
@@ -188,7 +188,7 @@ Novel View Synthesisを訳すと「新規視点の光景を合成」となる。
 </div><div>
 
 <center>
-<img class="w-100" src="volume_rendering_process_w_radiance_field.png" />
+<img class="w-100" src="/volume_rendering_process_w_radiance_field.png" />
 <font size="2">論文[7]より借用</font>
 </center>
 

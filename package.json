@@ -1,0 +1,19 @@
+{
+  "name": "Neural-Light-Fields_with_Ray-Space-Embedding",
+  "version": "1.0.0",
+  "description": "CVPR 2022 yomikai",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slidev/cli": "^0.33.1",
+    "@slidev/theme-default": "^0.21.2",
+    "@slidev/theme-seriph": "^0.21.2"
+  }
+}
